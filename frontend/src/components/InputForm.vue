@@ -1,6 +1,6 @@
 <template>
   <div class="input-form" style="margin-top: 10px">
-    <input v-model="inputValue" size="100" placeholder="Queue a message to be relayed with delay" />
+    <input v-model="inputValue" size="100" placeholder="Send a message to be echo'ed with a 5s delay" />
     <button @click="submitData">Submit</button>
   </div>
 </template>

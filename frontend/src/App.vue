@@ -1,24 +1,18 @@
 <template>
-  <div id="app" style="font-size: 18px; display: flex; justify-content: center; align-items: center;">
-    <authenticator v-if="!user">
-      <template v-slot="{ signOut }">
-        <div>
-          <button style="margin-top: 50px" @click="signOut">Sign Out</button>
-          <input-form />
-        </div>
-      </template>
-    </authenticator>
-    <div v-else>
-      <button style="margin-top: 50px" @click="signOut">Sign Out</button>
-      <input-form />
-    </div>
+  <div id="app" style="font-size: 18px; display: flex; justify-content: center; align-items: center; height: 60vh">
+    <authenticator v-if="!user"></authenticator>
+    <template v-if="auth.route === 'authenticated'">
+      <div>
+        <button @click="signOut">Sign out</button>
+        <input-form />
+      </div>
+    </template>
   </div>
 </template>
 
 <script>
-import { Authenticator } from "@aws-amplify/ui-vue"
+import { Authenticator, useAuthenticator } from "@aws-amplify/ui-vue"
 import "@aws-amplify/ui-vue/styles.css"
-
 import { Auth } from 'aws-amplify'
 import { ref, onMounted } from 'vue'
 import InputForm from '@/components/InputForm.vue'
@@ -31,6 +25,7 @@ export default {
   },
   setup() {
     const user = ref(null)
+    const auth = useAuthenticator()
 
     onMounted(async () => {
       try {
@@ -52,7 +47,7 @@ export default {
     }
 
     return {
-      user,
+      auth,
       signOut
     }
   }
