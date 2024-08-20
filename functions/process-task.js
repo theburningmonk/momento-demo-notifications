@@ -13,13 +13,17 @@ module.exports.handler = middy(async (event, context) => {
   await initClient(context.MOMENTO_API_KEY);
 
   for (const record of event.Records) {
-    logger.debug('Processing task', { record });
+    const { body } = record;
+    const task = JSON.parse(body);
+    const payload = JSON.parse(task.payload);
+    logger.debug('Processing task', { task });
 
     await sleep(5000);
 
-    await publish(record.topicName, record.message);
+    await publish(task.userId, `Finished task: ${payload.data}`);
   }
-}).use(ssm({
+})
+.use(ssm({
   cache: true,
   cacheExpiry: 5 * 60 * 1000,
   setToContext: true,

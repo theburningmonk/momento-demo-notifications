@@ -1,20 +1,20 @@
 const { SQSClient, SendMessageCommand } = require('@aws-sdk/client-sqs');
 const sqsClient = new SQSClient();
+const middy = require('@middy/core');
+const cors = require('@middy/http-cors');
 
 /**
  * 
  * @param {import('aws-lambda').APIGatewayProxyEvent} event 
  * @returns {Promise<import('aws-lambda').APIGatewayProxyResult>}
  */
-module.exports.handler = async (event) => {
-  const payload = JSON.parse(event.body);  
-
+module.exports.handler = middy(async (event) => {
   try {
     await sqsClient.send(new SendMessageCommand({
       QueueUrl: process.env.TASK_QUEUE_URL,
       MessageBody: JSON.stringify({
         userId: event.requestContext.authorizer.claims.sub,
-        payload: payload
+        payload: event.body
       })
     }));
 
@@ -28,4 +28,4 @@ module.exports.handler = async (event) => {
       body: JSON.stringify('Failed to enqueue task')
     };
   }
-};
+}).use(cors());
