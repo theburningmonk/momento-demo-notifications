@@ -9,7 +9,7 @@ const logger = new Logger({ serviceName: process.env.SERVICE_NAME });
  * @param {import('aws-lambda').SQSEvent} event 
  * @returns {Promise<import('aws-lambda').SQSBatchResponse>}
  */
-module.exports.handler = middy(async (event, context) => {
+const handler = async (event, context) => {
   await initClient(context.MOMENTO_API_KEY);
 
   for (const record of event.Records) {
@@ -22,7 +22,13 @@ module.exports.handler = middy(async (event, context) => {
 
     await publish(task.userId, `Finished task: ${payload.data}`);
   }
-})
+};
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+module.exports.handler = middy(handler)
 .use(ssm({
   cache: true,
   cacheExpiry: 5 * 60 * 1000,
@@ -31,7 +37,3 @@ module.exports.handler = middy(async (event, context) => {
     MOMENTO_API_KEY: process.env.MOMENTO_API_KEY_PARAM_NAME
   }
 }));
-
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}

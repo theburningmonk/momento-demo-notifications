@@ -8,7 +8,7 @@ const cors = require('@middy/http-cors');
  * @param {import('aws-lambda').APIGatewayProxyEvent} event 
  * @returns {Promise<import('aws-lambda').APIGatewayProxyResult>}
  */
-module.exports.handler = middy(async (event) => {
+const handler = async (event) => {
   try {
     await sqsClient.send(new SendMessageCommand({
       QueueUrl: process.env.TASK_QUEUE_URL,
@@ -28,4 +28,7 @@ module.exports.handler = middy(async (event) => {
       body: JSON.stringify('Failed to enqueue task')
     };
   }
-}).use(cors());
+};
+
+module.exports.handler = middy(handler)
+.use(cors());

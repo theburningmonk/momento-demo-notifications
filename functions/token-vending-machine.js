@@ -7,7 +7,7 @@ const ssm = require('@middy/ssm');
  * @param {import('aws-lambda').APIGatewayProxyEvent} event 
  * @returns {Promise<import('aws-lambda').APIGatewayProxyResult>}
  */
-module.exports.handler = middy(async (event, context) => {  
+const handler = async (event, context) => {  
   await initAuthClient(context.MOMENTO_API_KEY);
 
   try {
@@ -25,7 +25,9 @@ module.exports.handler = middy(async (event, context) => {
       body: JSON.stringify('Failed to generate token')
     };
   }
-})
+}
+
+module.exports.handler = middy(handler)
 .use(cors())
 .use(ssm({
   cache: true,
