@@ -1,6 +1,6 @@
 # momento-demo-notifications
 
-Demo app to show how to implement real-time notifications with Momento topics
+Demo of using [Momento](https://gomomento.com) topics to build a real-time notification system. The user can kick off a long-running task, and the backend will send real-time updates to the frontend via Websockets, using Momento topics.
 
 ## To deploy the backend
 
